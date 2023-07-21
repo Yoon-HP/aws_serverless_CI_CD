@@ -23,7 +23,15 @@ def lambda_handler(event, context):
         while (img.height>1024 or img.width>1024):
             img=img.resize((int(img.width/2),int(img.height/2)))
         img.save('/tmp/temp.png')
-        
+
+        try:
+            s3=boto3.client("s3")
+            s3.upload_file("/tmp/temp.png","s3-kkobook-character", f"test.png")
+        except:
+            return {
+                'statusCode': 400,
+                'body': json.dumps('s3 upload fail!!')
+            }
         # image cut process
         img = cv2.imread("/tmp/temp.png")
         # Convert into grayscale
