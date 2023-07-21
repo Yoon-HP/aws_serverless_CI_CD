@@ -22,18 +22,18 @@ def lambda_handler(event, context):
         # print(img.size)
         while (img.height>1024 or img.width>1024):
             img=img.resize((int(img.width/2),int(img.height/2)))
-        img.save('/tmp/temp.png')
+        img.save('/var/task/temp.png')
 
         try:
             s3=boto3.client("s3")
-            s3.upload_file("/tmp/temp.png","s3-kkobook-character", f"test.png")
+            s3.upload_file("/var/task/temp.png","s3-kkobook-character", f"test.png")
         except:
             return {
                 'statusCode': 400,
                 'body': json.dumps('s3 upload fail!!')
             }
         # image cut process
-        img = cv2.imread("/tmp/temp.png")
+        img = cv2.imread("/var/task/temp.png")
         # Convert into grayscale
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt.xml')
